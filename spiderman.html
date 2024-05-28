@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style3.css">
+    <link href="https://fonts.cdnfonts.com/css/dont-walk-run" rel="stylesheet"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕸🕷💀</title>
+</head>
+<body>
+    <h2>Masz kwadrat 3x3 skladający sie z dziewieciu pol. Celem jest umieszczenie liczb od 1 do 9 w kazdym z pol tak, aby suma liczb w kazdej kolumnie, wierszu oraz obu przekatnych byla taka sama.</h2>
+    <img src="kwadrat.jpg" alt="">
+    <!--Ziomal odpal se to w paint czy cos nie 👍-->
+    <!--WAZNE!: ODPOWIEDZ(CIAG CYFR WPISZ W KOLEJNOSCI: [od lewej do prawej] srodkowy rzad(spacja)->gorny(spacja)->dolny -->
+    <!--CZYLI COS W TYM STYLU: XXX XXX XXX-->
+    <!--UWAGA: JESLI ROZWIAZALES I HASLO NIE DZIALA SPROBOJ OBROCIC KWADRAT-->
+    <!-- tak wiem ze rozwiazanie jest na internecie ale mimo wszystko moze wysil swoje szare komorki i zrob sam leniu okok? -->
+    <h2>Podaj haslo:</h2>
+    <form id="tekstForm">
+        <textarea id="tekst" name="tekst" rows="1" cols="11"></textarea><br>
+        <input type="submit" value="Enter">
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('tekstForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const wprowadzonyTekst = document.getElementById('tekst').value.trim();
+
+            fetch('kwadrat.txt')
+                .then(response => response.text())
+                .then(zawartoscPliku => {
+                    if (wprowadzonyTekst === zawartoscPliku.trim()) {
+                        fetch('siema.txt')
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.text();
+                                } else {
+                                    throw new Error('Plik siema.txt nie istnieje.');
+                                }
+                            })
+                            .then(data => {
+                                const blob = new Blob([data], { type: 'text/plain' });
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.href = url;
+                                a.download = 'siema.txt';
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                            })
+                            .catch(error => {
+                                document.getElementById('result').textContent = error;
+                            });
+                    } else {
+                        document.getElementById('result').textContent = 'Nieprawidlowe haslo';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('result').textContent = 'Blad wczytywania pliku tekst.txt';
+                });
+        });
+    </script>
+</body>
+</html>
